@@ -1,0 +1,26 @@
+{
+  "name": "dnd-latvia-discord-bot",
+  "version": "1.0.0",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node ./src/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/app.js"
+  },
+  "author": "Toms Zvirbulis (https://github.com/tomszir)",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "color-thief-node": "^1.0.3",
+    "cross-env": "^6.0.3",
+    "discord.js": "^11.5.1",
+    "image-data-uri": "^2.0.1",
+    "rgb-hex": "^3.0.0",
+    "sequelize": "^5.21.3"
+  }
+}
