@@ -1,20 +1,64 @@
-const rgbHex = require('rgb-hex');
 const { RichEmbed } = require('discord.js');
-const { getColorFromURL } = require('color-thief-node');
+const Command = require('../../Command');
 
-// A utility class for verification on join.
-module.exports = {
-  async run(originalMessage, member) {
-    const avatarRGBColor = await getColorFromURL(member.user.avatarURL);
-    const avatarPrimaryColor = rgbHex(...avatarRGBColor);
+const config = require('../../../config');
+
+const memberRole = config.memberRole;
+const rules = config.rules;
+const schools = config.schools;
+
+// Get formatted rules.
+function getRuleString() {
+  return rules.map((r, i) => `\`${i + 1}.\` | ${r}`);
+}
+
+// Get formatted school names/emojis.
+function getSchoolString() {
+  return schools.map(s => `${s.emoji}  |  \`${s.name}\`­`).join('\n');
+}
+
+// Assigns a role to user, creates it if doesn't exist.
+async function assignRole(name, member, hoist = false) {
+  const guild = member.guild;
+  const getRole = () => guild.roles.find(r => r.name === name);
+
+  // If the role doesn't exist, create it.
+  if (!getRole())
+    await guild.createRole({
+      hoist,
+      name,
+      mentionable: true,
+      color: Math.floor(Math.random() * 16777215).toString(16)
+    });
+
+  // Assign the role to the member.
+  member.addRole(getRole());
+}
+
+module.exports = class extends Command {
+  constructor() {
+    super({
+      name: 'join',
+      description: 'Join the server and accept the rules.'
+    });
+  }
+
+  async execute(ctx, args) {
+    // Name some variables.
+    const member = ctx.member;
+    const originalMessage = ctx.message;
+
+    // Create the embed.
+    const avatarPrimaryColor = await ctx.getAvatarPrimaryColor();
     const embed = new RichEmbed()
       .setColor(avatarPrimaryColor)
       .setAuthor('To gain access read the rules and choose your school.', member.user.avatarURL)
+      .addField('Rules (you accept these by joining):', getRuleString())
       .addField('A list of schools:', getSchoolString())
       .setFooter("If you're having problems, please contact a moderator.");
 
     // Send the message.
-    const message = await originalMessage.channel.send(embed);
+    const message = await ctx.channel.send(embed);
 
     // Allow only the joined member and the select emojis.
     const filter = (r, u) => schools.map(s => s.emoji).includes(r.emoji.name) && u.id === member.id;
@@ -52,12 +96,12 @@ module.exports = {
 
       // Remove previous school role.
       await member.removeRoles(schoolRoles);
-      await assignOrCreateRole(memberRole, member);
+      await assignRole(memberRole, member);
 
       // Assign the roles to the user.
       if (school.disabled) return;
 
-      await assignOrCreateRole(schoolRoleName, member, true);
+      await assignRole(schoolRoleName, member, true);
     });
 
     collector.on('end', collected => {

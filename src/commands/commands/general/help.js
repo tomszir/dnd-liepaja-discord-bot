@@ -10,6 +10,8 @@ module.exports = class extends Command {
   }
 
   execute(ctx, args) {
+    return;
+
     const prefix = config.discord.prefix;
     const embed = new RichEmbed()
       .setTitle('Do not fear! Help is here!')

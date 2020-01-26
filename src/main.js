@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const rgbHex = require('rgb-hex');
+const { getColorFromURL } = require('color-thief-node');
 const { Client, RichEmbed } = require('discord.js');
 
 const CommandLoader = require('./commands/CommandLoader');
@@ -8,6 +10,10 @@ const MemberJoinUtil = require('./utils/MemberJoinUtil');
 
 const config = require('./config');
 const client = new Client();
+
+/*
+ADD SECRET FEATURE "SHUT UP FANDANGO"
+*/
 
 // Create a custom namespace in the client as to not interfere with default fields.
 client.c = {};
@@ -81,10 +87,13 @@ client.on('guildMemberAdd', async member => {
 
   if (!channel) return;
 
-  const embed = await MemberJoinUtil.createJoinEmbed(member);
-  const message = await ctx.channel.send(embed);
+  const avatarRGBColor = await getColorFromURL(member.user.avatarURL);
+  const avatarPrimaryColor = rgbHex(...avatarRGBColor);
+  const embed = new RichEmbed()
+    .setColor(avatarPrimaryColor)
+    .setAuthor(`${member.user.username} has joined the server!`, member.user.avatarURL);
 
-  MemberJoinUtil.runReactionCollector(message, embed, member);
+  channel.send(embed);
 });
 
 // Log into the Discord API.
