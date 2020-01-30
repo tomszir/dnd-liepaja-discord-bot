@@ -1,5 +1,5 @@
 const { RichEmbed } = require('discord.js');
-const Command = require('../../Command');
+const Command = require('@/libs/commands/Command');
 
 module.exports = class extends Command {
   constructor() {
@@ -76,6 +76,7 @@ module.exports = class extends Command {
         .setColor(await ctx.getAvatarPrimaryColor())
         .setDescription('A new announcement has been created!')
     );
+
     channel.send(announcement);
   }
 };

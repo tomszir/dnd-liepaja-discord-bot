@@ -1,9 +1,9 @@
-const Command = require('../../Command');
+const Command = require('@/libs/commands/Command');
 
 module.exports = class extends Command {
   constructor() {
     super({
-      name: 'tutorial',
+      name: 'schedule',
       description: 'Schedule an upcoming announcement.',
       roles: ['D&D Moderator']
     });

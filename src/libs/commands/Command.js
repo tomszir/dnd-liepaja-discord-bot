@@ -1,8 +1,13 @@
-const Discord = require('discord.js');
+// const Discord = require('discord.js');
+
+function validateOptions(options = {}) {
+  if (!(options instanceof Object)) throw Error('Command options must be an Object.');
+  if (!options.name) throw Error('You must provide a name to the Command options.');
+}
 
 module.exports = class Command {
   constructor(options = {}) {
-    this.constructor.validateOptions(options);
+    validateOptions(options);
 
     // The unique identifier of this command.
     this.identifier = options.identifier || options.name;
@@ -49,6 +54,11 @@ module.exports = class Command {
     ctx.send('This command does not have an executor function.');
   }
 
+  get fullName() {
+    return `${this.group}/${this.name}`;
+  }
+
+  /*
   static sendErrorMessage(ctx, message) {
     const embed = new Discord.RichEmbed().setColor(0xff0000).setDescription(message);
 
@@ -59,4 +69,5 @@ module.exports = class Command {
     if (!(options instanceof Object)) throw Error('Command options must be an Object.');
     if (!options.name) throw Error('You must define a command name.');
   }
+  */
 };

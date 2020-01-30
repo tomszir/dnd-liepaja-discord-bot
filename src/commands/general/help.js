@@ -1,6 +1,6 @@
 const { RichEmbed } = require('discord.js');
-const Command = require('../../Command');
-const config = require('../../../config');
+const Command = require('@/libs/commands/Command');
+const config = require('@config');
 
 module.exports = class extends Command {
   constructor() {
@@ -10,12 +10,9 @@ module.exports = class extends Command {
   }
 
   execute(ctx, args) {
-    return;
-
     const prefix = config.discord.prefix;
     const embed = new RichEmbed()
-      .setTitle('Do not fear! Help is here!')
-      .setDescription(`The prefix is \`${prefix}\``)
+      .setAuthor('Here are all the commands!')
       .addField(
         'Commands:',
         ctx.client.c.commands.commands.map(c => '`' + prefix + c.name + '`').join(', ')
